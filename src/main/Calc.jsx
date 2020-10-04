@@ -23,7 +23,6 @@ export default class Calc extends Component {
     }
 
     clearMemory() {
-        console.log('limpar')
         this.setState({...initialState})
     }
 
@@ -32,13 +31,29 @@ export default class Calc extends Component {
     }
 
     addDigit(n) {
-        console.log(n)
+        if(n === '.' && this.state.displayValue.includes('.')) {
+            return
+        }
+
+        const clearDisplay = this.state.displayValue === '0'
+            || this.state.clearDisplay;
+        const currentValue = clearDisplay ? '' : this.state.displayValue;
+        const displayValue = currentValue + n;
+        this.setState({ displayValue, clearDisplay: false });
+
+        if (n !== '.') {
+            const i = this.state.current;
+            const newValue = parseFloat(displayValue);
+            const values = [...this.state.values];
+            values[i] = newValue;
+            this.setState({ values });
+        }
     }
     
     render() {
         return (
             <div className="calc">
-                <Display value={1000} />
+                <Display value={this.state.displayValue} />
                 <Button label="AC" click={this.clearMemory} triple/>
                 <Button label="/" click={this.setOperation} operation/>
                 <Button label="7" click={this.addDigit}/>
