@@ -5,6 +5,26 @@ import Display from '../components/Display';
 import './styles.css';
 
 export default class Calculator extends Component {
+    
+    constructor(props) {
+        super(props);
+        this.clearMemory = this.clearMemory.bind(this);
+        this.setOperation = this.setOperation.bind(this);
+        this.addDigit = this.addDigit.bind(this);
+    }
+
+    clearMemory() {
+        console.log('limpar')
+    }
+
+    setOperation(operation) {
+        console.log(operation)
+    }
+
+    addDigit(n) {
+        console.log(n)
+    }
+    
     render() {
         return (
             <div className="calc">
