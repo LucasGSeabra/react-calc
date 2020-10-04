@@ -24,6 +24,7 @@ export default class Calc extends Component {
 
     clearMemory() {
         console.log('limpar')
+        this.setState({...initialState})
     }
 
     setOperation(operation) {
