@@ -4,8 +4,17 @@ import Display from '../components/Display';
 
 import './styles.css';
 
-export default class Calculator extends Component {
-    
+const initialState = {
+    displayValue: '0',
+    clearDisplay: false,
+    operation: null,
+    values: [0, 0],
+    current: 0
+}
+
+export default class Calc extends Component {
+    state = {...initialState};
+
     constructor(props) {
         super(props);
         this.clearMemory = this.clearMemory.bind(this);
