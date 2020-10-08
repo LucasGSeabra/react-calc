@@ -1,98 +1,95 @@
-import React, { Component } from 'react';
+import React, { Component, useState } from 'react';
 import Button from '../components/Button';
 import Display from '../components/Display';
 
 import './styles.css';
 
-const initialState = {
-    displayValue: '0',
-    clearDisplay: false,
-    operation: null,
-    values: [0, 0],
-    current: 0
-}
+function Calc() {
 
-export default class Calc extends Component {
-    state = {...initialState};
+    const [display, setDisplay] = useState('0');
+    const [clearDisplay, setClearDisplay] = useState(false);
+    const [operation, setOperation] = useState('');
+    const [values, setValues] = useState([0, 0]);
+    const [current, setCurrent] = useState(0);
 
-    constructor(props) {
-        super(props);
-        this.clearMemory = this.clearMemory.bind(this);
-        this.setOperation = this.setOperation.bind(this);
-        this.addDigit = this.addDigit.bind(this);
+    function clearMemory() {
+        setDisplay('0');
+        setClearDisplay(false);
+        setOperation('');
+        setValues([0, 0]);
+        setCurrent(0);
     }
 
-    clearMemory() {
-        this.setState({...initialState})
-    }
-
-    setOperation(operation) {
-        if(this.state.current === 0) {
-            this.setState({ operation, current: 1, clearDisplay: true });
+    function operate() {
+        if(current === 0) {
+            setCurrent(1);
+            setClearDisplay(true);
         } else {
             const equals = operation === '=';
-            const currentOperation = this.state.operation;
+            const currentOperation = operation;
 
-            const values = [...this.state.values];
+            let val = [...values];
             try {
-                values[0] = eval(`${values[0]} ${currentOperation} ${values[1]}`);
-            } catch(e) {
-                values[0] = this.state.values[0];
+                val[0] = eval(`${val[0]} ${currentOperation} ${val[1]}`);
+                console.log('try');
+            } catch {
+                val[0] = values[0];
+                console.log('catch');
             }
-            values[1] = 0;
+            val[1] = 0;
 
-            this.setState({
-                displayValue: values[0],
-                operation: equals ? null : operation,
-                current: equals ? 0 : 1,
-                clearDisplay: !equals,
-                values
-            })
+            setDisplay(val[0]);
+            setOperation( equals ? null : operation);
+            setCurrent(equals ? 0 : 1);
+            setClearDisplay(!equals);
+            setValues([...val]);
         }
     }
 
-    addDigit(n) {
-        if(n === '.' && this.state.displayValue.includes('.')) {
+    function type(n) {
+        const dot = display;
+        if(n === '.' && dot.includes('.')) {
             return
         }
-
-        const clearDisplay = this.state.displayValue === '0'
-            || this.state.clearDisplay;
-        const currentValue = clearDisplay ? '' : this.state.displayValue;
+        const clear = display === '0'
+            || clearDisplay;        
+        const currentValue = clear ? '' : display;
         const displayValue = currentValue + n;
-        this.setState({ displayValue, clearDisplay: false });
+        setDisplay(displayValue);
+        setClearDisplay(false);
 
         if (n !== '.') {
-            const i = this.state.current;
+            const i = current;
             const newValue = parseFloat(displayValue);
-            const values = [...this.state.values];
-            values[i] = newValue;
-            this.setState({ values });
+            let val = [...values];
+            val[i] = newValue;
+           setValues([...val]);
         }
+
     }
-    
-    render() {
-        return (
-            <div className="calc">
-                <Display value={this.state.displayValue} />
-                <Button label="AC" click={this.clearMemory} triple/>
-                <Button label="/" click={this.setOperation} operation/>
-                <Button label="7" click={this.addDigit}/>
-                <Button label="8" click={this.addDigit}/>
-                <Button label="9" click={this.addDigit}/>
-                <Button label="*" click={this.setOperation} operation/>
-                <Button label="4" click={this.addDigit}/>
-                <Button label="5" click={this.addDigit}/>
-                <Button label="6" click={this.addDigit}/>
-                <Button label="-" click={this.setOperation} operation/>
-                <Button label="1" click={this.addDigit}/>
-                <Button label="2" click={this.addDigit}/>
-                <Button label="3" click={this.addDigit}/>
-                <Button label="+" click={this.setOperation} operation/>
-                <Button label="0" click={this.addDigit} double/>
-                <Button label="." click={this.addDigit}/>
-                <Button label="=" click={this.setOperation} operation/>
-            </div>
-        )
-    }
+
+    return (
+        <div className="calc">
+            <Display value={display} />
+            <Button label="AC" click={clearMemory} triple/>
+            <Button label="/" click={operate} operation/>
+            <Button label="7" click={type}/>
+            <Button label="8" click={type}/>
+            <Button label="9" click={type}/>
+            <Button label="*" click={operate} operation/>
+            <Button label="4" click={type}/>
+            <Button label="5" click={type}/>
+            <Button label="6" click={type}/>
+            <Button label="-" click={operate} operation/>
+            <Button label="1" click={type}/>
+            <Button label="2" click={type}/>
+            <Button label="3" click={type}/>
+            <Button label="+" click={operate} operation/>
+            <Button label="0" click={type} double/>
+            <Button label="." click={type}/>
+            <Button label="=" click={operate} operation/>
+        </div>
+    )
 }
+
+export default Calc
