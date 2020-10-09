@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import Button from '../components/Button';
 import Display from '../components/Display';
+import Operate from '../utils/Operate/Operate';
 
 import './styles.css';
 
@@ -24,17 +25,17 @@ function Calc() {
         if(current === 0) {
             setCurrent(1);
             setClearDisplay(true);
+            setOperation(n);
         } else {
             const equals = operation === '=';
             const currentOperation = operation;
 
             let val = [...values];
             try {
-                val[0] = eval(`${val[0]} ${currentOperation} ${val[1]}`);
-                console.log('try');
+                val[0] = Operate(val[0], val[1], currentOperation);               
             } catch {
                 val[0] = values[0];
-                console.log('catch');
+                
             }
             val[1] = 0;
 
@@ -65,7 +66,6 @@ function Calc() {
             val[i] = newValue;
            setValues([...val]);
         }
-
     }
 
     return (
