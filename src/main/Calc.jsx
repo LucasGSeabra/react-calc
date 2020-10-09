@@ -21,7 +21,7 @@ function Calc() {
         setCurrent(0);
     }
 
-    function operate() {
+    function operate(n) {
         if(current === 0) {
             setCurrent(1);
             setClearDisplay(true);
